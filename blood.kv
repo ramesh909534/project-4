@@ -1,0 +1,198 @@
+#:import MDFillRoundFlatButton kivymd.uix.button.MDFillRoundFlatButton
+#:import MDTextField kivymd.uix.textfield.MDTextField
+#:import ScrollView kivy.uix.scrollview.ScrollView
+
+ScreenManager:
+    LoginScreen:
+    SignupScreen:
+    HomeScreen:
+    RegisterScreen:
+    SearchScreen:
+    MapScreen:
+
+<LoginScreen>:
+    name: "login"
+    MDBoxLayout:
+        orientation: "vertical"
+        spacing: dp(20)
+        padding: dp(40)
+        MDLabel:
+            text: "Login"
+            halign: "center"
+            font_style: "H4"
+        MDTextField:
+            id: login_username
+            hint_text: "Username"
+        MDTextField:
+            id: login_password
+            hint_text: "Password"
+            password: True
+        MDFillRoundFlatButton:
+            text: "Login"
+            md_bg_color: 1, 0, 0, 1
+            on_release: root.login_user(login_username.text, login_password.text)
+        MDFillRoundFlatButton:
+            text: "Signup"
+            on_release: app.root.current = "signup"
+
+<SignupScreen>:
+    name: "signup"
+    MDBoxLayout:
+        orientation: "vertical"
+        spacing: dp(20)
+        padding: dp(40)
+        MDLabel:
+            text: "Signup"
+            halign: "center"
+            font_style: "H4"
+        MDTextField:
+            id: signup_username
+            hint_text: "Username"
+        MDTextField:
+            id: signup_password
+            hint_text: "Password"
+            password: True
+        MDFillRoundFlatButton:
+            text: "Register"
+            md_bg_color: 0, 0.6, 0, 1
+            on_release: root.signup_user(signup_username.text, signup_password.text)
+        MDFillRoundFlatButton:
+            text: "Back to Login"
+            on_release: app.root.current = "login"
+
+<HomeScreen>:
+    name: "home"
+    MDBoxLayout:
+        orientation: "vertical"
+        spacing: dp(20)
+        padding: dp(40)
+        MDLabel:
+            text: "Blood Donation App"
+            halign: "center"
+            font_style: "H4"
+        MDFillRoundFlatButton:
+            text: "Register Donor"
+            on_release: app.root.current = "register"
+        MDFillRoundFlatButton:
+            text: "Search Donor"
+            on_release: app.root.current = "search"
+        MDFillRoundFlatButton:
+            text: "View Map"
+            on_release: app.root.current = "map"
+        MDFillRoundFlatButton:
+            text: "Logout"
+            md_bg_color: 1,0,0,1
+            on_release: app.root.current = "login"
+
+<RegisterScreen>:
+    name: "register"
+    MDBoxLayout:
+        orientation: "vertical"
+        spacing: dp(15)
+        padding: dp(20)
+        MDLabel:
+            text: "Register Donor"
+            halign: "center"
+            font_style: "H5"
+        MDTextField:
+            id: name
+            hint_text: "Name"
+        MDTextField:
+            id: bg
+            hint_text: "Blood Group"
+        MDTextField:
+            id: phone
+            hint_text: "Phone Number"
+        MDTextField:
+            id: lat
+            hint_text: "Latitude"
+        MDTextField:
+            id: lon
+            hint_text: "Longitude"
+        MDFillRoundFlatButton:
+            text: "Get GPS Location"
+            on_release: root.get_gps_location()
+        MDFillRoundFlatButton:
+            text: "Register"
+            md_bg_color: 0,0.6,0,1
+            on_release: root.register_donor(name.text, bg.text, phone.text, lat.text, lon.text)
+        MDFillRoundFlatButton:
+            text: "Back"
+            on_release: app.root.current = "home"
+
+<SearchScreen>:
+    name: "search"
+    MDBoxLayout:
+        orientation: "vertical"
+        spacing: dp(15)
+        padding: dp(20)
+        MDLabel:
+            text: "Search Donor"
+            halign: "center"
+            font_style: "H5"
+        MDTextField:
+            id: search_bg
+            hint_text: "Enter Blood Group"
+        MDFillRoundFlatButton:
+            text: "Search"
+            on_release: root.search_donor(search_bg.text)
+        ScrollView:
+            MDBoxLayout:
+                id: result_list
+                orientation: "vertical"
+                adaptive_height: True
+                spacing: dp(10)
+        MDFillRoundFlatButton:
+            text: "Export CSV"
+            md_bg_color: 0,0.6,0,1
+            on_release: root.export_csv()
+        MDFillRoundFlatButton:
+            text: "Back"
+            on_release: app.root.current = "home"
+
+<MapScreen>:
+    name: "map"
+    MDBoxLayout:
+        orientation: "vertical"
+        padding: dp(20)
+        spacing: dp(15)
+        MDLabel:
+            text: "Open Google Maps"
+            halign: "center"
+            font_style: "H5"
+        MDFillRoundFlatButton:
+            text: "Open Maps"
+            on_release: app.open_map("13.0827", "80.2707")   # Default Chennai
+        MDFillRoundFlatButton:
+            text: "Back"
+            on_release: app.root.current = "home"
+
+
+<DonorCard>:
+    orientation: "vertical"
+    size_hint_y: None
+    height: dp(120)
+    padding: dp(10)
+    spacing: dp(5)
+    md_bg_color: 1,1,1,1
+    radius: [20]
+    MDLabel:
+        text: root.name
+        font_style: "H6"
+    MDLabel:
+        text: "Phone: " + root.phone
+    MDBoxLayout:
+        spacing: dp(15)
+        MDFillRoundFlatButton:
+            text: "Call"
+            md_bg_color: 1,0,0,1
+            on_release: app.call_donor(root.phone)
+        MDFillRoundFlatButton:
+            text: "Map"
+            on_release: app.open_map(root.lat, root.lon)
+
+
+
+
+
+
