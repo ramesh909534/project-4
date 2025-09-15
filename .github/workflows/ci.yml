@@ -31,12 +31,30 @@ jobs:
             libncurses-dev \
             python3-pip
 
+      - name: Install Android SDK & NDK
+        run: |
+          mkdir -p $HOME/android-sdk
+          cd $HOME/android-sdk
+          wget https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip -O cmdtools.zip
+          unzip cmdtools.zip -d cmdline-tools
+          mv cmdline-tools/cmdline-tools cmdline-tools/latest
+          yes | cmdline-tools/latest/bin/sdkmanager --sdk_root=$HOME/android-sdk --licenses
+          yes | cmdline-tools/latest/bin/sdkmanager --sdk_root=$HOME/android-sdk \
+            "platform-tools" \
+            "platforms;android-31" \
+            "build-tools;31.0.0" \
+            "ndk;21.4.7075529"
+
       - name: Install Python dependencies
         run: |
           pip install --upgrade pip
           pip install buildozer cython==0.29.33
 
       - name: Build APK
+        env:
+          ANDROIDSDK: $HOME/android-sdk
+          ANDROIDNDK: $HOME/android-sdk/ndk/21.4.7075529
+          PATH: $HOME/android-sdk/platform-tools:$HOME/android-sdk/cmdline-tools/latest/bin:$PATH
         run: |
           buildozer android debug
 
