@@ -1,50 +1,37 @@
-name: Build APK
+name: Build KivyMD APK
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
+  workflow_dispatch:  # manual trigger option
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
 
     steps:
-      # Step 1: Checkout code
-      - uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-      # Step 2: Set up Python
       - name: Set up Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
-          python-version: '3.10'
+          python-version: "3.10"
 
-      # Step 3: Install dependencies
       - name: Install dependencies
         run: |
           sudo apt update
-          sudo apt install -y python3-pip openjdk-8-jdk unzip
-          python -m pip install --upgrade pip
-          pip install buildozer cython virtualenv
+          sudo apt install -y git zip unzip openjdk-17-jdk python3-pip python3-setuptools python3-wheel
+          pip install --upgrade pip
+          pip install cython==0.29.36 buildozer
 
-      # Step 4: Install Android SDK & NDK (for buildozer)
-      - name: Install Android SDK/NDK
-        run: |
-          sudo apt-get install -y git zip unzip
-          wget https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip
-          mkdir -p $HOME/android-sdk/cmdline-tools
-          unzip commandlinetools-linux-9477386_latest.zip -d $HOME/android-sdk/cmdline-tools
-          yes | $HOME/android-sdk/cmdline-tools/cmdline-tools/bin/sdkmanager --sdk_root=$HOME/android-sdk --licenses
-          yes | $HOME/android-sdk/cmdline-tools/cmdline-tools/bin/sdkmanager --sdk_root=$HOME/android-sdk "platform-tools" "platforms;android-30" "build-tools;30.0.3" "ndk;21.4.7075529"
-
-      # Step 5: Build APK
       - name: Build APK
         run: |
-          echo "⚡ Starting APK build..."
-          buildozer android debug
+          buildozer -v android debug
 
-      # Step 6: Upload APK as Artifact
       - name: Upload APK
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          name: MyApp-APK
+          name: blooddonation-apk
           path: bin/*.apk
