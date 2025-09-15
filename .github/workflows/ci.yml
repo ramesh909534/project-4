@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest  # changed to latest for faster allocation
+    runs-on: ubuntu-latest  # use latest stable image
 
     steps:
       - name: Checkout Code
@@ -28,9 +28,7 @@ jobs:
             openjdk-17-jdk \
             unzip \
             zip \
-            libncurses5 \
-            libncurses5-dev \
-            libtinfo5 \
+            libncurses-dev \
             python3-pip
 
       - name: Install Python dependencies
